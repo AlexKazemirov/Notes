@@ -17,6 +17,8 @@ class ViewController: UIViewController {
         return tableView
     }()
     
+    public var completion: ((String) -> Void)?
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -40,10 +42,8 @@ class ViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         self.tableView.dataSource = self
         self.tableView.delegate = self
-        
         self.initTableView()
         configureItems()
-        print(UIFont.familyNames[3])
     }
     
     
@@ -60,7 +60,8 @@ class ViewController: UIViewController {
         self.view.addSubview(self.tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         self.tableView.register(TableViewCell.self, forCellReuseIdentifier: "TableViewCell")
-        
+        tableView.layer.cornerRadius = 5
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         tableView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
     }
@@ -81,7 +82,7 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch tableView {
         case self.tableView:
@@ -91,19 +92,17 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         }
     }
     
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
         let note = self.notes[indexPath.row]
         cell.textLabel?.text = note.noteText
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
-       tableView.deselectRow(at: indexPath, animated: true)
-
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+        
         navigationController?.pushViewController(NoteViewController(selectedNote: notes[indexPath.row].noteText!, navigationTitle: "Редактирование"), animated: true)
     }
     
